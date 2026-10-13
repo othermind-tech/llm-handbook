@@ -69,6 +69,8 @@ Chapter 24 →  Production AI (agents, tool routing, memory, RAG)
 
 Fast decisions without text
 Chapter 25 →  System 1 Decision Models (typed, calibrated choices in one pass)
+Chapter 26 →  Inside a Decision Model (BERT, Laya, Vega)
+Chapter 27 →  Training and Trusting a Decision Model (data, calibration, evaluation)
 
 Appendix
 Appendix A →  TinyGPT by Hand (one full forward and backward pass with real numbers)

@@ -25,7 +25,7 @@ The handbook grew out of a guided study session built around one lecture series.
   - **First lecture:** *Lecture 1: Building LLMs from scratch: Series introduction*: <https://youtu.be/Xpr8D6LeAtw>
   - **Playlist:** *Building LLMs from scratch*: <https://youtube.com/playlist?list=PLPTV0NXA_ZSgsLAr8YCgCwhPIJNNtexWu>
   - The handbook does not reproduce the lectures. It uses their sequence as a skeleton, and expands or reorders where more explanation was useful.
-- **The source conversation:** a ChatGPT tutoring conversation titled *"LLM building overview"*, which walked through the lecture topics and went on to cover fine-tuning, quantization, serving, MoE, reasoning and multimodal models. The explanations, worked examples and the questions asked along the way come from it, reorganized and corrected where needed. Chapters 1 to 15 and 18 to 20 draw on it heavily, Chapters 22 and 23 only lightly (the conversation covered those topics briefly), and Chapters 16, 17, 21, 24 and 25 were written mainly from the outside sources listed below. Chapter 25 also grew out of a follow-up study session and was then checked against the primary sources in Section 14. Address: <https://chatgpt.com/share/6a83f0ae-b5d8-83e8-aba9-4d63e88465db>
+- **The source conversation:** a ChatGPT tutoring conversation titled *"LLM building overview"*, which walked through the lecture topics and went on to cover fine-tuning, quantization, serving, MoE, reasoning and multimodal models. The explanations, worked examples and the questions asked along the way come from it, reorganized and corrected where needed. Chapters 1 to 15 and 18 to 20 draw on it heavily, Chapters 22 and 23 only lightly (the conversation covered those topics briefly), and Chapters 16, 17, 21, 24, 25, 26 and 27 were written mainly from the outside sources listed below. Chapters 25 to 27 also grew out of a follow-up study session and were then checked against the primary sources in Section 14. Address: <https://chatgpt.com/share/6a83f0ae-b5d8-83e8-aba9-4d63e88465db>
   - The web citations that appeared inside that conversation were not preserved in the exported copy, so they cannot be listed here. Where a claim needed support, it was re-checked against the sources below.
 - **No other YouTube playlists or videos** were searched or used.
 
@@ -44,12 +44,12 @@ The handbook grew out of a guided study session built around one lecture series.
 
 ## 3. The Transformer family (Chapter 15)
 
-- Devlin et al. (2018). *BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding.* [arXiv:1810.04805](https://arxiv.org/abs/1810.04805).
+- Devlin et al. (2018). *BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding.* [arXiv:1810.04805](https://arxiv.org/abs/1810.04805). Chapters 15 and 26.
 - Raffel et al. (2019). *Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer.* [arXiv:1910.10683](https://arxiv.org/abs/1910.10683). T5.
 - Lewis et al. (2019). *BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation, Translation, and Comprehension.* [arXiv:1910.13461](https://arxiv.org/abs/1910.13461).
 - Liu et al. (2019). *RoBERTa: A Robustly Optimized BERT Pretraining Approach.* [arXiv:1907.11692](https://arxiv.org/abs/1907.11692).
 - He et al. (2020). *DeBERTa: Decoding-enhanced BERT with Disentangled Attention.* [arXiv:2006.03654](https://arxiv.org/abs/2006.03654).
-- Reimers et al. (2019). *Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks.* [arXiv:1908.10084](https://arxiv.org/abs/1908.10084). Embedding models; also Chapter 24 (RAG).
+- Reimers et al. (2019). *Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks.* [arXiv:1908.10084](https://arxiv.org/abs/1908.10084). Embedding models; also Chapters 24 (RAG) and 26.
 - Radford et al. (2022). *Robust Speech Recognition via Large-Scale Weak Supervision.* [arXiv:2212.04356](https://arxiv.org/abs/2212.04356). Whisper, an encoder–decoder model. Chapters 15, 19.
 
 ## 4. Inference: attention cost, the KV cache and long context (Chapters 12 and 17)
@@ -173,37 +173,55 @@ The handbook grew out of a guided study session built around one lecture series.
 - Liu et al. (2023), *Lost in the Middle*, and Yao et al. (2022), *ReAct*: listed in Sections 4 and 10.
 - Model Context Protocol: listed in Section 12.
 
-## 14. System 1 decision models (Chapter 25)
+## 14. System 1 decision models (Chapters 25 to 27)
 
-The field is weeks old, so most sources here are model cards, source code, announcements and a few very recent papers. Entries marked **(search result only)** were seen as a headline or summary but not opened in full; entries marked **(not opened)** are known only from another source's reference list.
+The field is weeks old, so most sources here are model cards, source code, announcements and a few very recent papers. Entries marked **(search result only)** were seen as a headline or summary but not opened in full; entries marked **(not opened)** are known only from another source's reference list. Everything else was opened and read for the parts the chapters use.
 
-**Jev**
+**Jev (Chapters 25 to 27)**
 
-- TypeSafe AI. *Introducing System One Models and Jev* (15 September 2026). <https://typesafe.ai/blog/introducing-system-one-models-and-jev>. Source of the pricing, latency and speed claims, the 255-option limit, the evaluation method, and the list of what is not disclosed.
+- TypeSafe AI. *Introducing System One Models and Jev* (15 September 2026). <https://typesafe.ai/blog/introducing-system-one-models-and-jev>. Source of the pricing, latency and speed claims, the 255-option limit, the evaluation method, the blank training-data FAQ heading, and the list of what is not disclosed.
 - Wikipedia, *Jev (AI model)*. <https://en.wikipedia.org/wiki/Jev_(AI_model)>. Background on the company and the reported synthetic-data training.
 - TechCrunch (18 September 2026). *A new kind of AI model from a ChatGPT inventor is thrilling developers.* Early-user statements and background on the company.
 - Ling et al. (2026). *Jev in the Wild: A Data-Driven Analysis of the Jev Model's Functionality, Applications and Ecosystem.* [arXiv:2609.30216](https://arxiv.org/abs/2609.30216). Abstract, introduction and conclusion read. Source of the project count and the description of the three interfaces.
 - *Calibrated Decision Models for Autonomous Penetration-Testing Harnesses: JEV and Laya as System One Decision Layers for LLM-Driven Pentest Agents.* [arXiv:2609.28940](https://arxiv.org/abs/2609.28940). Abstract read. The four decision points, and the authors' statement that their evidence is exploratory.
-- Akita, F. (10 October 2026). *Which Jev-like AI decision/classifier model is best?* <https://akitaonrails.com/en/2026/10/10/which-jev-like-ai-decision-classifier-model-is-best/>. An independent comparison of about 16 models. Its author states that its test cases were AI-assisted and reviewed, with no independent human annotation.
+- Akita, F. (10 October 2026). *Which Jev-like AI decision/classifier model is best?* <https://akitaonrails.com/en/2026/10/10/which-jev-like-ai-decision-classifier-model-is-best/>. An independent comparison of about 16 models (Chapter 27, Part 6). Its author states that its test cases were AI-assisted and reviewed, with no independent human annotation.
 - News coverage of Microsoft-Decision-1, an OpenAI "Decisions" API, Cloudflare's Clef models, Perplexity's Decider and a common decision-model API (October 2026). **(search result only)** Those entries in Chapter 25, Section 6.4, are labelled "reported" for that reason.
 
-**Laya**
+**Laya (Chapters 25 to 27)**
 
-- Convai Innovations / Nandakishor M. *Laya.* Repository <https://github.com/NandhaKishorM/laya>, documentation <https://nandhakishorm.github.io/laya/>, and model cards <https://huggingface.co/convaiinnovations/laya>. The README, benchmark file, fine-tuning and evaluation documents and the source code were read. The performance figures are the authors' own.
-- Nandakishor M. (2025). *SalesRLAgent: A Reinforcement Learning Approach for Real-Time Sales Conversion Prediction and Optimization.* [arXiv:2503.23303](https://arxiv.org/abs/2503.23303). The earlier sales-conversion work mentioned in the lineage paragraph.
-- Nandakishor M. (2025). *Confidence-Aware Routing for Large Language Model Reliability Enhancement.* [arXiv:2510.01237](https://arxiv.org/abs/2510.01237). The earlier routing work mentioned in the lineage paragraph.
-- Nandakishor M., *I Built Non-Autoregressive Decision Models a Year Ago* (DEV Community). The author's own account of the earlier work. It links a Reddit post, which blocks automated access, so that post was not read.
-- Warner et al. (2024). *Smarter, Better, Faster, Longer: A Modern Bidirectional Encoder for Fast, Memory Efficient, and Long Context Finetuning and Inference* (ModernBERT). [arXiv:2412.13663](https://arxiv.org/abs/2412.13663). The encoder Laya is built on.
+- Convai Innovations / Nandakishor M. *Laya.* Repository <https://github.com/NandhaKishorM/laya>, documentation <https://nandhakishorm.github.io/laya/>, and model cards <https://huggingface.co/convaiinnovations/laya>. The README, benchmark file, fine-tuning and evaluation documents and the source files that build the input, the model, the training loop and the calibration were read. All statements about Laya's architecture (Chapter 26) and training and calibration (Chapter 27) come from these. The performance figures are the authors' own.
+- Laya's GitHub issues: #4 and #26 (requests for training scripts), #555 (an independent evaluation against Jev), #741 (a controlled comparison of training losses, single run) and #887 (the `laya.train` module). Used in Chapter 27, Parts 2 and 6.
+- Nandakishor M. (2025). *SalesRLAgent: A Reinforcement Learning Approach for Real-Time Sales Conversion Prediction and Optimization.* [arXiv:2503.23303](https://arxiv.org/abs/2503.23303). The earlier sales-conversion work (Chapters 25 and 26).
+- Nandakishor M. (2025). *Confidence-Aware Routing for Large Language Model Reliability Enhancement.* [arXiv:2510.01237](https://arxiv.org/abs/2510.01237). The earlier routing work (Chapters 25 and 26).
+- Nandakishor M., *I Built Non-Autoregressive Decision Models a Year Ago* (DEV Community). The author's own account of the earlier work and of the original training recipe (Chapter 27, Part 2). It links a Reddit post, which blocks automated access, so that post was not read.
 
-**Vega and Decision 2.0**
+**Vega and Decision 2.0 (Chapters 25 to 27)**
 
-- vLLM Semantic Router team. *Decision-2.0-Vega-27B* and the smaller Decision 2.0 model cards. <https://huggingface.co/vllm-sr/Decision-2.0-Vega-27B>. Cards, configuration files and source code were read. The latency figures are the cards' own.
+- vLLM Semantic Router team. *Decision-2.0-Vega-27B* and the smaller Decision 2.0 model cards. <https://huggingface.co/vllm-sr/Decision-2.0-Vega-27B>. Cards, configuration files, the adapter file's header and source code were read. The latency figures are the cards' own.
+- Qwen. *Qwen3.8-27B* configuration. <https://huggingface.co/Qwen/Qwen3.8-27B>. Configuration only. Source of the layer, head, vocabulary and vision-tower figures in Chapter 26, Part 3.
+- vLLM Semantic Router team. *Vela 2.0* write-up. <https://vllm-sr.ai/blog/vela-2-0-open-foundation-routing-models/>. Describes a different model family built on Decision 2.0; used only for the team's data practices (Chapter 27, Part 1).
 
-**Related ideas and data**
+**Encoders and BERT-family background (Chapter 26, Part 1)**
 
-- Clarke et al. (2023). *Label agnostic pre-training for zero-shot text classification.* Findings of ACL 2023, pp. 1009 to 1021. **(not opened)**; it appears in the reference list of the "Jev in the Wild" paper.
-- Hugging Face dataset pages for `LocalLLaMA/typed-decisions` and `ZefanCai/Open-Jev`. Descriptions and metadata only.
-- Kahneman, D. (2011). *Thinking, Fast and Slow.* The origin of the System 1 and System 2 terms. Used only for that general idea.
+- Devlin et al. (2018), *BERT*, and Reimers et al. (2019), *Sentence-BERT*: listed in Section 3. For Chapter 26 the BERT paper is the source of the `[CLS]`, `[SEP]` and segment inputs, the 15% and 80/10/10 masking recipe, next-sentence prediction, the fine-tuning heads and hyperparameters, and the sizes and training scale quoted; Sentence-BERT is the source of the statement that raw `[CLS]` or averaged BERT outputs make poor sentence embeddings.
+- Warner et al. (2024). *Smarter, Better, Faster, Longer: A Modern Bidirectional Encoder for Fast, Memory Efficient, and Long Context Finetuning and Inference* (ModernBERT). [arXiv:2412.13663](https://arxiv.org/abs/2412.13663). The encoder Laya is built on; source of the architecture, training and size figures in Chapter 26, Part 1.7.
+- Radford et al. (2018). *Improving Language Understanding by Generative Pre-Training* (GPT-1), OpenAI. Start and end tokens and the use of the last position's activation (Chapter 26, Part 1.4).
+- Wang et al. (2024). *Improving Text Embeddings with Large Language Models* (E5-Mistral). [arXiv:2401.00368](https://arxiv.org/abs/2401.00368). Method passage read. Appending an `[EOS]` token and taking its last-layer vector (Chapter 26, Part 1.4).
+- Goyal et al. (2023). *Think before you speak: Training Language Models With Pause Tokens.* [arXiv:2310.02226](https://arxiv.org/abs/2310.02226). Abstract read (Chapter 26, Part 1.4).
+- Dong et al. (2019). *Unified Language Model Pre-training for Natural Language Understanding and Generation* (UniLM). [arXiv:1905.03197](https://arxiv.org/abs/1905.03197). **(search result only)** (Chapter 26, Part 1.8).
+- Du et al. (2021). *GLM: General Language Model Pretraining with Autoregressive Blank Infilling.* [arXiv:2103.10360](https://arxiv.org/abs/2103.10360), and the UL2 20B announcement on the Google Research blog. **(search result only)** (Chapter 26, Part 1.8).
+- BehnamGhader et al. (2024). *LLM2Vec: Large Language Models Are Secretly Powerful Text Encoders.* [arXiv:2404.05961](https://arxiv.org/abs/2404.05961). **(search result only)** (Chapter 26, Part 1.8).
+- Weller et al. (2025). *Seq vs Seq: An Open Suite of Paired Encoders and Decoders* (Ettin). [arXiv:2507.11412](https://arxiv.org/abs/2507.11412). **(search result only)** (Chapter 26, Part 1.8).
+- Clarke et al. (2023). *Label agnostic pre-training for zero-shot text classification.* Findings of ACL 2023, pp. 1009 to 1021. **(not opened)**; it appears in the reference list of the "Jev in the Wild" paper (Chapters 25 and 27).
+
+**Data and datasets (Chapter 27, Part 1)**
+
+- `LocalLLaMA/typed-decisions` on Hugging Face (Apache-2.0). The full dataset card was read. Source of the teacher description (mean of three samples from a roughly 4B-class model), the 0.735 teacher self-agreement figure and the reference points quoted.
+- `typesafe/evalsafe-*`, `ZefanCai/Open-Jev` (CC0), `tasksource/tasksource-jev-typed-decisions`, `tasksource/procedural-typed-decisions` (Apache-2.0) and `pngwn/system-one-decisions` (CC BY-NC 4.0). Hugging Face metadata and descriptions only (the Open-Jev card was partly read).
+
+**General**
+
+- Kahneman, D. (2011). *Thinking, Fast and Slow.* The origin of the System 1 and System 2 terms (Chapter 25). Used only for that general idea.
 
 ---
 
@@ -216,5 +234,5 @@ The field is weeks old, so most sources here are model cards, source code, annou
 - **Hardware figures (Chapter 23)** such as H100 bandwidth, NVLink and PCIe speeds are as quoted by NVIDIA, and the NVLink and PCIe figures there are total both directions. The TPU 8i and Jalapeño details are company announcements.
 - **Chapters 16, 17 and 21** (the modern-models chapters) were written earlier in the project and checked against the official papers and model cards for the models discussed. The papers listed above are the primary sources. Page-level addresses for individual claims in those chapters were not recorded, so check a specific figure against the cited paper or model card before relying on it.
 - **Not used.** No book, course or website beyond those listed was consulted, and no other YouTube playlist or video was searched or sourced.
-- **Decision models (Chapter 25).** The field is weeks old. Statements about Laya's architecture were checked against its source code and documentation, and statements about Vega's against its model cards, configuration and code. Performance and speed figures are the makers' own unless an independent test is named, and Jev's internals are not public. The worked numbers in the chapter (probabilities, expected level, ranked probability score) are illustrative and were computed by hand and checked with a short script.
-- **Not used (Chapter 25).** The Reddit post that the Laya author links could not be opened, and the articles on Microsoft-Decision-1, OpenAI's decisions API and Cloudflare's Clef models were seen only as search results.
+- **Decision models (Chapters 25 to 27).** The field is weeks old. Statements about Laya's architecture were checked against its source code and documentation, and statements about Vega's against its model cards, configuration and code. Performance and speed figures are the makers' own unless an independent test is named, and Jev's internals are not public. The worked numbers in Chapters 25 to 27 (probabilities, expected level, ranked probability score, the calibration, drift, margin-of-error and cost examples) are illustrative: the ones in Chapters 26 and 27 were produced by the seeded toy programs in `Chapters-26-27-experiments.js`, which you can rerun. They show mechanisms and are not measurements of Laya or Vega. The compute and memory estimates use the standard rules of thumb (about 6 × parameters × tokens for training, 2 × parameters per token for a forward pass, about 16 bytes per parameter for mixed-precision training).
+- **Not used (Chapters 25 to 27).** The Reddit post that the Laya author links could not be opened, the articles on Microsoft-Decision-1, OpenAI's decisions API and Cloudflare's Clef models were seen only as search results, and the arXiv preprints and papers marked "(search result only)" in Section 14 were not read in full.

@@ -12,7 +12,7 @@ The name is borrowed from psychology. Daniel Kahneman describes two modes of hum
 
 > **A decision model is usually not a new kind of Transformer.** It is a Transformer (often a BERT-style encoder, sometimes a decoder LLM) with a different *input layout*, a different *readout* and a different *training objective*. The novelty is in the job, and in the discipline of making the output typed and honest.
 
-This chapter is the concept and the landscape: what a decision is, the three kinds of question, the vocabulary, where decision models fit in a system, and the models that exist today (Jev, Laya, Vega and others). It stays at the level of ideas and does not train or build a model.
+This chapter is the concept and the landscape: what a decision is, the three kinds of question, the vocabulary, where decision models fit in a system, and the models that exist today (Jev, Laya, Vega and others). It stays at the level of ideas. Chapter 26 builds one, starting from BERT, and Chapter 27 covers its data, training, calibration and evaluation.
 
 The parts of this chapter:
 
@@ -50,7 +50,7 @@ This works, and for many applications it is fine. But look at what it costs when
 
 1. **A loop for a one-word answer.** Generating text means one forward pass per token. The answer "billing" may be two or three tokens, plus whatever the model chooses to add around it.
 2. **The answer is free text.** The program must parse it. The model may say "Billing team", "billing." or a sentence of explanation. You can force a format (structured output modes exist), but you are still asking a writer to behave like a switch.
-3. **The confidence is words, not a number.** "I'm fairly sure it's billing" can't be put in an `if` statement. Token probabilities exist inside the model, but they are not calibrated (calibration, defined in Part 4), and they are probabilities over the next *token*, not over *your list of allowed answers*.
+3. **The confidence is words, not a number.** "I'm fairly sure it's billing" can't be put in an `if` statement. Token probabilities exist inside the model, but they are not calibrated (calibration, defined in Part 4 and explained in Chapter 27), and they are probabilities over the next *token*, not over *your list of allowed answers*.
 4. **The expensive tokens are the output tokens** (Chapter 24, routing and cost). For a decision, the output is the one part you did not need to pay for.
 
 ### What we actually want
@@ -69,7 +69,7 @@ One pass. A fixed answer list. A number for every option. That is a decision mod
 
 ### "Couldn't a small language model do this?"
 
-Partly, and the idea is worth seeing because it shows what the new models are doing. A decoder LLM can be used this way directly: put the options in the prompt, run **one** forward pass, and read the probabilities of the option labels at the next-token position instead of letting the model write. One independent test of decision models used exactly such a baseline (a 1.5B-parameter Qwen model with "parallel constrained decoding": score each allowed answer in parallel, never generate freely). The dedicated decision models go further, with a purpose-built readout and training, and they report probabilities that are meant to be *honest* (see Calibration in Part 4).
+Partly, and the idea is worth seeing because it shows what the new models are doing. A decoder LLM can be used this way directly: put the options in the prompt, run **one** forward pass, and read the probabilities of the option labels at the next-token position instead of letting the model write. One independent test of decision models used exactly such a baseline (a 1.5B-parameter Qwen model with "parallel constrained decoding": score each allowed answer in parallel, never generate freely). The dedicated decision models go further, with a purpose-built readout and training, and they report probabilities that are meant to be *honest* (see Calibration in Part 4, and Chapter 27, Part 4).
 
 ### Two names for the same idea
 
@@ -273,11 +273,11 @@ A probability is only useful if the system *does something* with it. Three commo
 - **Cost-based.** Suppose acting correctly is worth +1, acting wrongly costs 3, and escalating costs 0.5. Acting beats escalating when `p − 3(1 − p) > −0.5`, that is `4p − 3 > −0.5`, so **p > 0.625**. (These numbers are the ones Laya's author describes for its act/escalate head, used here as an illustration of the reasoning.)
 - **Coverage target.** Answer only the most confident half of the questions, and send the rest elsewhere.
 
-All three assume the probabilities are **honest**. That is the subject of calibration (Part 4), and the policies above depend on it.
+All three assume the probabilities are **honest**. That is the subject of calibration (Part 4, and Chapter 27, Part 4), and the policies above depend on it.
 
 ### "Why not just a classifier?"
 
-An ordinary classifier (for example a BERT encoder with a classification head, Chapter 15) has its labels fixed inside it: one output per class. Add a class and you retrain. A decision model reads the allowed answers as *part of the input*, so the list can change per request. That is the difference, and the whole reason for the extra machinery.
+An ordinary classifier (for example a BERT encoder with a classification head, Chapter 15, Part 4 and Chapter 26, Part 1.6) has its labels fixed inside it: one output per class. Add a class and you retrain. A decision model reads the allowed answers as *part of the input*, so the list can change per request. That is the difference, and the whole reason for the extra machinery.
 
 ### "Why not embeddings and a similarity comparison?"
 
@@ -362,17 +362,17 @@ TypeSafe describes the model as transformer-based. Outside observers have specul
 | `laya-multilingual` | mmBERT-base | 322M | 1,024 (can run up to 8,192) | 100+ languages |
 | `laya-typed-decisions` | ModernBERT-large | 421M | 1,024 | fine-tuned on a four-workflow decision benchmark |
 
-**Claims (the authors').** About 33 ms for one question on a T4 GPU, calibration error cut from 0.466 to 0.081 after temperature fitting, and 0.766 accuracy for the fine-tuned checkpoint on a typed-decisions test. All three are the authors' own figures (treat them as claims, not measurements).
+**Claims (the authors').** About 33 ms for one question on a T4 GPU, calibration error cut from 0.466 to 0.081 after temperature fitting, and 0.766 accuracy for the fine-tuned checkpoint on a typed-decisions test. All three are the authors' own figures (treat them as claims, not measurements; Chapter 27, Part 6 examines them).
 
 **Lineage.** The author had earlier published two papers on related ideas: a March 2025 model that predicts the probability a sales conversation will convert, and a September 2025 paper on estimating, *before* a language model answers, whether it is likely to hallucinate, and routing the query accordingly. In his own write-up he says the underlying concepts predate Jev. The papers do describe related ideas (probability outputs, reinforcement learning, routing before generation). They do not describe the typed, request-time interface, and how Jev itself was developed is not public.
 
-**Status in one sentence.** Laya's base checkpoints are weak zero-shot on some tests, and its authors say the value comes from fine-tuning on your own decisions. Its design is fully open, which is why it is the one decision model whose internals anyone can inspect.
+**Status in one sentence.** Laya's base checkpoints are weak zero-shot on some tests, and its authors say the value comes from fine-tuning on your own decisions. Its design is fully open, which is why it is the one decision model whose internals anyone can inspect. Chapter 26 takes it apart.
 
 ### 6.3 Decision 2.0 and Vega (vLLM Semantic Router team): the decoder way
 
 **Who and what.** Decision 2.0 is a family of six open decision models from the team behind the vLLM Semantic Router, released under Apache 2.0. They are built on **Qwen** language models. **Vega** is the largest. It is *not* a release from Qwen's own team. It is built on a Qwen base model.
 
-**How it differs.** Where Laya is a 421M-parameter bidirectional encoder, the Decision 2.0 models are **decoder LLMs** adapted with LoRA (Chapter 13) and a small readout head, and they accept the same request shape as Laya (`state`, and questions with `type`, `instructions`, `criteria`).
+**How it differs.** Where Laya is a 421M-parameter bidirectional encoder, the Decision 2.0 models are **decoder LLMs** adapted with LoRA (Chapter 13) and a small readout head, and they accept the same request shape as Laya (`state`, and questions with `type`, `instructions`, `criteria`). Chapter 26, Part 3 takes Vega's design apart.
 
 | Model | Parameters | Context | Median latency per single-question request (card) |
 |---|---|---|---|
@@ -410,7 +410,7 @@ This list comes from news coverage and an independent comparison in the first we
 
 ### 6.6 How to read the claims
 
-Whenever a number appears, ask four questions:
+Whenever a number appears, ask four questions (Chapter 27, Part 6 turns these into a longer checklist):
 
 1. **Who measured it?** The vendor, the model's authors, or an outsider?
 2. **On what data?** Was the test data part of the training mix?
@@ -427,7 +427,7 @@ It helps to separate what is old from what is new, because the topic is surround
 
 **Old ideas, repackaged:**
 
-- **Encoders with a classification head** (BERT, 2018). See Chapter 15.
+- **Encoders with a classification head** (BERT, 2018). See Chapters 15 and 26.
 - **Zero-shot classification with labels given as text.** Models that take the candidate labels at request time have existed for years (for example NLI-based zero-shot classifiers, and "label-agnostic" pretraining). Vega is even tagged as a zero-shot-classification model on Hugging Face.
 - **Cross-encoders** for re-ranking, where the query and candidate are read together.
 - **Cross-entropy and temperature scaling**, the standard tools for training and calibrating a classifier.
@@ -454,7 +454,7 @@ It helps to separate what is old from what is new, because the topic is surround
 | "It cannot be wrong, because it cannot hallucinate." | It cannot invent a sentence, but it can pick the wrong option, with confidence. |
 | "The list of answers is learned inside the model." | The list is request-time *text* that the model reads. That is why it can change per request, and why each answer must explain itself. |
 | "A score question returns one number." | It returns a probability for each level, and the single number (the expected level) is calculated from them. |
-| "Calibrated means accurate." | Calibrated means *honest about its uncertainty*. A calibrated model can still be wrong often. (See Calibration in Part 4.) |
+| "Calibrated means accurate." | Calibrated means *honest about its uncertainty*. A calibrated model can still be wrong often. (See Calibration in Part 4 and Chapter 27, Part 4.) |
 | "Embeddings and similarity do the same job." | Similarity compares topics and reads the text and the options separately. A decision model reads them together and gives a probability. |
 | "Jev's design is known." | TypeSafe has not published the architecture, weights, training data or a technical paper. |
 | "Vega comes from the Qwen team." | It comes from the vLLM Semantic Router team, built on a Qwen base model. |
@@ -489,4 +489,4 @@ Read claims:   who measured · on what data · which version · compared with wh
 
 ## What's next
 
-You now have the concept, the vocabulary and the map. Two threads continue from here. To see how a decision model is built, the open ones are the place to look: their model cards, source code and training documentation are listed in [References](References.md), section 14, and the encoder background they rely on is in Chapter 15. For the most concrete view of any Transformer, the **Appendix** follows a complete forward pass and a complete backward pass through a tiny GPT with small real numbers, so you can see every matrix multiplication, softmax and gradient that the chapters described in words.
+You now have the concept, the vocabulary and the map. **Chapter 26** takes two real designs apart: Laya, built on a BERT-style encoder, and Vega, built on a Qwen decoder, starting with what BERT and its `[CLS]` token really are. **Chapter 27** covers what turns such an architecture into a model people can rely on: where the labelled data comes from, how it is trained and what that costs, how to keep its confidence honest, and how to test it fairly. The sources behind all three chapters are listed in [References](References.md), section 14. After that, the **Appendix** makes everything concrete one last time, following a complete forward pass and a complete backward pass through a tiny GPT with small real numbers.

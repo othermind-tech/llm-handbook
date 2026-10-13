@@ -1,8 +1,8 @@
 # LLM Handbook
 
-> A guide to how large language models are built, trained, adapted, compressed, served and used. It teaches by derivation (Why, then How, then What): each component appears because the previous step left a problem. Chapters 1 to 15 are stable concepts. Chapters 16 to 23, and Chapter 25, cover fast-moving topics, so check the web for current model names, sizes, prices and versions. Snapshot: October 2026.
+> A guide to how large language models are built, trained, adapted, compressed, served and used. It teaches by derivation (Why, then How, then What): each component appears because the previous step left a problem. Chapters 1 to 15 are stable concepts. Chapters 16 to 23 and 25 to 27 cover fast-moving topics, so check the web for current model names, sizes, prices and versions. Snapshot: October 2026.
 
-Instructions for AI assistants: read [AGENTS.md](AGENTS.md) first. Use these files as the primary source, cite chapters, and use web search for newer or model-specific facts. Load only the chapters you need (the whole handbook is about 150,000 tokens).
+Instructions for AI assistants: read [AGENTS.md](AGENTS.md) first. Use these files as the primary source, cite chapters, and use web search for newer or model-specific facts. Load only the chapters you need (the whole handbook is about 170,000 tokens).
 
 ## Start here
 - [README.md](README.md): the Introduction, the teaching method and the full contents
@@ -49,7 +49,10 @@ Instructions for AI assistants: read [AGENTS.md](AGENTS.md) first. Use these fil
 
 ## Fast decisions without text
 - [Chapter 25: System 1 Decision Models](Chapter-25-System-1-Decision-Models.md): decision vs generation, choice/score/noul question kinds, calibrated probabilities, act/ask/escalate policies, the landscape (Jev, Laya, Vega and others), how to read claims
+- [Chapter 26: Inside a Decision Model](Chapter-26-Inside-a-Decision-Model.md): BERT, [CLS], [SEP], masking and fine-tuning heads, ModernBERT, Laya layer by layer (input layout, [MASK] slots, head, scorer, sizes), Vega (Qwen decoder, LoRA, readout), speed comparison
+- [Chapter 27: Training and Trusting a Decision Model](Chapter-27-Training-and-Trusting-a-Decision-Model.md): training data and soft labels, cross-entropy and ranked probability score, the reinforcement-learning step, training cost, calibration (temperature, ECE), keeping calibration alive, evaluation and stress tests
 
 ## Appendix
 - [Appendix A: TinyGPT by Hand](Appendix-A-TinyGPT-by-Hand.md): one full training step with every number shown
 - [Appendix-A-tinygpt.js](Appendix-A-tinygpt.js): the program that produced those numbers (run with `node Appendix-A-tinygpt.js`)
+- [Chapters-26-27-experiments.js](Chapters-26-27-experiments.js): seeded toy programs behind the worked numbers in Chapters 26 and 27 (run with `node Chapters-26-27-experiments.js all`)

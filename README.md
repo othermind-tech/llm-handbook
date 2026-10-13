@@ -4,7 +4,7 @@
 
 **Start here:** [Chapter 1: The Big Picture](Chapter-01-The-Big-Picture.md) · [Contents](#contents) · [Learn with an AI assistant](#learning-with-an-ai-assistant) · [Appendix A: TinyGPT by Hand](Appendix-A-TinyGPT-by-Hand.md) · [References](References.md)
 
-**Prefer a PDF?** [Download the full handbook as one PDF](https://github.com/anandcoding-cloud/llm-handbook-how-large-language-models-work/raw/main/pdf/LLM-Handbook-How-Large-Language-Models-Work.pdf) (315 pages, with a clickable table of contents). It is generated from these Markdown files.
+**Prefer a PDF?** [Download the full handbook as one PDF](https://github.com/anandcoding-cloud/llm-handbook-how-large-language-models-work/raw/main/pdf/LLM-Handbook-How-Large-Language-Models-Work.pdf) (352 pages, with a clickable table of contents). It is generated from these Markdown files.
 
 ---
 
@@ -153,11 +153,14 @@ which from the web.
 
 ### Fast decisions without text
 25. [System 1 Decision Models](Chapter-25-System-1-Decision-Models.md): typed, calibrated decisions in one pass, and the models that make them (Jev, Laya, Vega)
+26. [Inside a Decision Model](Chapter-26-Inside-a-Decision-Model.md): BERT and `[CLS]` properly, Laya layer by layer, Vega the decoder way
+27. [Training and Trusting a Decision Model](Chapter-27-Training-and-Trusting-a-Decision-Model.md): data, training, cost, calibration and evaluation
 
 ### Appendix and sources
 - [Appendix A: TinyGPT by Hand](Appendix-A-TinyGPT-by-Hand.md): one complete training step with every number visible. The program that produced the numbers is included: [`Appendix-A-tinygpt.js`](Appendix-A-tinygpt.js) (run it with `node Appendix-A-tinygpt.js`).
+- [`Chapters-26-27-experiments.js`](Chapters-26-27-experiments.js): the small seeded programs behind the worked numbers in Chapters 26 and 27 (run it with `node Chapters-26-27-experiments.js all`). They are toy models that illustrate mechanisms, not measurements of Laya or Vega.
 - [References](References.md): papers, documentation, model cards and the study material behind the handbook.
 
 ## A note on how current it is
 
-The first fourteen chapters describe ideas that change slowly. Chapters 16 to 23, and Chapter 25, describe a fast-moving area: model names, sizes, defaults and prices in particular may be out of date by the time you read them, so treat specific figures as a snapshot and the ideas as the lasting part. The References list the sources to check.
+The first fourteen chapters describe ideas that change slowly. Chapters 16 to 23 and 25 to 27 describe a fast-moving area: model names, sizes, defaults and prices in particular may be out of date by the time you read them, so treat specific figures as a snapshot and the ideas as the lasting part. The References list the sources to check.

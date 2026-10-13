@@ -123,7 +123,7 @@ Give an encoder `"The cat sat on the mat."` and instead of a sentence, you get s
 - **Classification:** spam or not, positive or negative review.
 - **Re-ranking and matching:** deciding which of several candidate results best fits a question.
 
-Well-known encoder-only models include BERT, RoBERTa, DeBERTa, and the embedding models built on the same idea (sentence-transformers, and families such as E5 and BGE). Newer, modernized encoders such as ModernBERT also exist. The pattern is the same: **text in, meaning vector out.** (We'll meet these vectors again when we get to retrieval in Chapter 24.)
+Well-known encoder-only models include BERT, RoBERTa, DeBERTa, and the embedding models built on the same idea (sentence-transformers, and families such as E5 and BGE). Newer, modernized encoders such as ModernBERT also exist. The pattern is the same: **text in, meaning vector out.** (We'll meet these vectors again when we get to retrieval in Chapter 24. Chapter 26 returns to BERT in more detail: the `[CLS]` token, pretraining, fine-tuning heads and ModernBERT.)
 
 ---
 

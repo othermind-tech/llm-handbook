@@ -332,7 +332,7 @@ Medium request  →  mid-size model                  →  medium effort
 Hard request    →  strongest model                 →  high effort
 ```
 
-A router can be rules (by task type, length or user tier), a small classifier, or even a small model that judges difficulty. Add **fallbacks** too, so that if one provider fails or is slow, the request goes to another.
+A router can be rules (by task type, length or user tier), a small classifier, or even a small model that judges difficulty. (A small decision model of the kind described in Chapter 25 is a natural router: it reads the request and returns a calibrated probability for each route in milliseconds.) Add **fallbacks** too, so that if one provider fails or is slow, the request goes to another.
 
 ### What a request costs
 
@@ -443,4 +443,4 @@ Reliability: log everything; evaluate on example sets (judge models have biases)
 
 ## What's next
 
-You now have the whole path from a sentence to a system, from tokenization through the Transformer, training, serving and reasoning, up to the application built around the model. **Chapter 25** looks at the other side of that application: a new family of fast models that do not write text at all, but make a typed, calibrated *decision* from a fixed list of answers, in one pass. After that, the **Appendix** makes everything concrete one last time. It follows a complete forward pass and a complete backward pass through a tiny GPT using small real numbers, so you can see every matrix multiplication, softmax and gradient that the chapters described in words.
+You now have the whole path from a sentence to a system, from tokenization through the Transformer, training, serving and reasoning, up to the application built around the model. **Chapters 25 to 27** look at the other side of that application: a new family of fast models that do not write text at all, but make a typed, calibrated *decision* from a fixed list of answers, in one pass. Chapter 25 introduces them, and Chapters 26 and 27 take two real designs apart and show how such a model is trained, calibrated and tested. After that, the **Appendix** makes everything concrete one last time. It follows a complete forward pass and a complete backward pass through a tiny GPT using small real numbers, so you can see every matrix multiplication, softmax and gradient that the chapters described in words.
