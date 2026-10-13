@@ -1,8 +1,8 @@
 # LLM Handbook
 
-> A guide to how large language models are built, trained, adapted, compressed, served and used. It teaches by derivation (Why, then How, then What): each component appears because the previous step left a problem. Chapters 1 to 15 are stable concepts. Chapters 16 to 23 cover fast-moving topics, so check the web for current model names, sizes, prices and versions. Snapshot: October 2026.
+> A guide to how large language models are built, trained, adapted, compressed, served and used. It teaches by derivation (Why, then How, then What): each component appears because the previous step left a problem. Chapters 1 to 15 are stable concepts. Chapters 16 to 23, and Chapter 25, cover fast-moving topics, so check the web for current model names, sizes, prices and versions. Snapshot: October 2026.
 
-Instructions for AI assistants: read [AGENTS.md](AGENTS.md) first. Use these files as the primary source, cite chapters, and use web search for newer or model-specific facts. Load only the chapters you need (the whole handbook is about 140,000 tokens).
+Instructions for AI assistants: read [AGENTS.md](AGENTS.md) first. Use these files as the primary source, cite chapters, and use web search for newer or model-specific facts. Load only the chapters you need (the whole handbook is about 150,000 tokens).
 
 ## Start here
 - [README.md](README.md): the Introduction, the teaching method and the full contents
@@ -46,6 +46,9 @@ Instructions for AI assistants: read [AGENTS.md](AGENTS.md) first. Use these fil
 
 ## In production
 - [Chapter 24: Production AI](Chapter-24-Production-AI.md): tool calling, MCP, memory, RAG, agents, model routing, reliability
+
+## Fast decisions without text
+- [Chapter 25: System 1 Decision Models](Chapter-25-System-1-Decision-Models.md): decision vs generation, choice/score/noul question kinds, calibrated probabilities, act/ask/escalate policies, the landscape (Jev, Laya, Vega and others), how to read claims
 
 ## Appendix
 - [Appendix A: TinyGPT by Hand](Appendix-A-TinyGPT-by-Hand.md): one full training step with every number shown

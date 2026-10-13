@@ -67,6 +67,9 @@ Chapter 23 →  Speed and Scale (Speculative Decoding, Parallelism, Hardware)
 In production
 Chapter 24 →  Production AI (agents, tool routing, memory, RAG)
 
+Fast decisions without text
+Chapter 25 →  System 1 Decision Models (typed, calibrated choices in one pass)
+
 Appendix
 Appendix A →  TinyGPT by Hand (one full forward and backward pass with real numbers)
 References →  Papers, documentation and the study material behind the handbook

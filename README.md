@@ -1,10 +1,10 @@
 # The LLM Handbook: How Large Language Models Work, from Tokenization to Production
 
-> A free, plain-Markdown guide to how large language models work: tokenization, embeddings, attention, the Transformer, training, fine-tuning (LoRA, RLHF, DPO), quantization, Mixture of Experts, reasoning models, serving (llama.cpp, vLLM) and production AI. It teaches by derivation: **Why, How, What**.
+> A free, plain-Markdown guide to how large language models work: tokenization, embeddings, attention, the Transformer, training, fine-tuning (LoRA, RLHF, DPO), quantization, Mixture of Experts, reasoning models, serving (llama.cpp, vLLM), production AI and fast System 1 decision models. It teaches by derivation: **Why, How, What**.
 
 **Start here:** [Chapter 1: The Big Picture](Chapter-01-The-Big-Picture.md) · [Contents](#contents) · [Learn with an AI assistant](#learning-with-an-ai-assistant) · [Appendix A: TinyGPT by Hand](Appendix-A-TinyGPT-by-Hand.md) · [References](References.md)
 
-**Prefer a PDF?** [Download the full handbook as one PDF](https://github.com/anandcoding-cloud/llm-handbook-how-large-language-models-work/raw/main/pdf/LLM-Handbook-How-Large-Language-Models-Work.pdf) (298 pages, with a clickable table of contents). It is generated from these Markdown files.
+**Prefer a PDF?** [Download the full handbook as one PDF](https://github.com/anandcoding-cloud/llm-handbook-how-large-language-models-work/raw/main/pdf/LLM-Handbook-How-Large-Language-Models-Work.pdf) (315 pages, with a clickable table of contents). It is generated from these Markdown files.
 
 ---
 
@@ -151,10 +151,13 @@ which from the web.
 ### In production
 24. [Production AI](Chapter-24-Production-AI.md): tools, memory, retrieval, agents, routing and reliability
 
+### Fast decisions without text
+25. [System 1 Decision Models](Chapter-25-System-1-Decision-Models.md): typed, calibrated decisions in one pass, and the models that make them (Jev, Laya, Vega)
+
 ### Appendix and sources
 - [Appendix A: TinyGPT by Hand](Appendix-A-TinyGPT-by-Hand.md): one complete training step with every number visible. The program that produced the numbers is included: [`Appendix-A-tinygpt.js`](Appendix-A-tinygpt.js) (run it with `node Appendix-A-tinygpt.js`).
 - [References](References.md): papers, documentation, model cards and the study material behind the handbook.
 
 ## A note on how current it is
 
-The first fourteen chapters describe ideas that change slowly. Chapters 16 to 23 describe a fast-moving area: model names, sizes, defaults and prices in particular may be out of date by the time you read them, so treat specific figures as a snapshot and the ideas as the lasting part. The References list the sources to check.
+The first fourteen chapters describe ideas that change slowly. Chapters 16 to 23, and Chapter 25, describe a fast-moving area: model names, sizes, defaults and prices in particular may be out of date by the time you read them, so treat specific figures as a snapshot and the ideas as the lasting part. The References list the sources to check.

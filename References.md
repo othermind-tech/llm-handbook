@@ -25,7 +25,7 @@ The handbook grew out of a guided study session built around one lecture series.
   - **First lecture:** *Lecture 1: Building LLMs from scratch: Series introduction*: <https://youtu.be/Xpr8D6LeAtw>
   - **Playlist:** *Building LLMs from scratch*: <https://youtube.com/playlist?list=PLPTV0NXA_ZSgsLAr8YCgCwhPIJNNtexWu>
   - The handbook does not reproduce the lectures. It uses their sequence as a skeleton, and expands or reorders where more explanation was useful.
-- **The source conversation:** a ChatGPT tutoring conversation titled *"LLM building overview"*, which walked through the lecture topics and went on to cover fine-tuning, quantization, serving, MoE, reasoning and multimodal models. The explanations, worked examples and the questions asked along the way come from it, reorganized and corrected where needed. Chapters 1 to 15 and 18 to 20 draw on it heavily, Chapters 22 and 23 only lightly (the conversation covered those topics briefly), and Chapters 16, 17, 21 and 24 were written mainly from the outside sources listed below. Address: <https://chatgpt.com/share/6a83f0ae-b5d8-83e8-aba9-4d63e88465db>
+- **The source conversation:** a ChatGPT tutoring conversation titled *"LLM building overview"*, which walked through the lecture topics and went on to cover fine-tuning, quantization, serving, MoE, reasoning and multimodal models. The explanations, worked examples and the questions asked along the way come from it, reorganized and corrected where needed. Chapters 1 to 15 and 18 to 20 draw on it heavily, Chapters 22 and 23 only lightly (the conversation covered those topics briefly), and Chapters 16, 17, 21, 24 and 25 were written mainly from the outside sources listed below. Chapter 25 also grew out of a follow-up study session and was then checked against the primary sources in Section 14. Address: <https://chatgpt.com/share/6a83f0ae-b5d8-83e8-aba9-4d63e88465db>
   - The web citations that appeared inside that conversation were not preserved in the exported copy, so they cannot be listed here. Where a claim needed support, it was re-checked against the sources below.
 - **No other YouTube playlists or videos** were searched or used.
 
@@ -173,6 +173,38 @@ The handbook grew out of a guided study session built around one lecture series.
 - Liu et al. (2023), *Lost in the Middle*, and Yao et al. (2022), *ReAct*: listed in Sections 4 and 10.
 - Model Context Protocol: listed in Section 12.
 
+## 14. System 1 decision models (Chapter 25)
+
+The field is weeks old, so most sources here are model cards, source code, announcements and a few very recent papers. Entries marked **(search result only)** were seen as a headline or summary but not opened in full; entries marked **(not opened)** are known only from another source's reference list.
+
+**Jev**
+
+- TypeSafe AI. *Introducing System One Models and Jev* (15 September 2026). <https://typesafe.ai/blog/introducing-system-one-models-and-jev>. Source of the pricing, latency and speed claims, the 255-option limit, the evaluation method, and the list of what is not disclosed.
+- Wikipedia, *Jev (AI model)*. <https://en.wikipedia.org/wiki/Jev_(AI_model)>. Background on the company and the reported synthetic-data training.
+- TechCrunch (18 September 2026). *A new kind of AI model from a ChatGPT inventor is thrilling developers.* Early-user statements and background on the company.
+- Ling et al. (2026). *Jev in the Wild: A Data-Driven Analysis of the Jev Model's Functionality, Applications and Ecosystem.* [arXiv:2609.30216](https://arxiv.org/abs/2609.30216). Abstract, introduction and conclusion read. Source of the project count and the description of the three interfaces.
+- *Calibrated Decision Models for Autonomous Penetration-Testing Harnesses: JEV and Laya as System One Decision Layers for LLM-Driven Pentest Agents.* [arXiv:2609.28940](https://arxiv.org/abs/2609.28940). Abstract read. The four decision points, and the authors' statement that their evidence is exploratory.
+- Akita, F. (10 October 2026). *Which Jev-like AI decision/classifier model is best?* <https://akitaonrails.com/en/2026/10/10/which-jev-like-ai-decision-classifier-model-is-best/>. An independent comparison of about 16 models. Its author states that its test cases were AI-assisted and reviewed, with no independent human annotation.
+- News coverage of Microsoft-Decision-1, an OpenAI "Decisions" API, Cloudflare's Clef models, Perplexity's Decider and a common decision-model API (October 2026). **(search result only)** Those entries in Chapter 25, Section 6.4, are labelled "reported" for that reason.
+
+**Laya**
+
+- Convai Innovations / Nandakishor M. *Laya.* Repository <https://github.com/NandhaKishorM/laya>, documentation <https://nandhakishorm.github.io/laya/>, and model cards <https://huggingface.co/convaiinnovations/laya>. The README, benchmark file, fine-tuning and evaluation documents and the source code were read. The performance figures are the authors' own.
+- Nandakishor M. (2025). *SalesRLAgent: A Reinforcement Learning Approach for Real-Time Sales Conversion Prediction and Optimization.* [arXiv:2503.23303](https://arxiv.org/abs/2503.23303). The earlier sales-conversion work mentioned in the lineage paragraph.
+- Nandakishor M. (2025). *Confidence-Aware Routing for Large Language Model Reliability Enhancement.* [arXiv:2510.01237](https://arxiv.org/abs/2510.01237). The earlier routing work mentioned in the lineage paragraph.
+- Nandakishor M., *I Built Non-Autoregressive Decision Models a Year Ago* (DEV Community). The author's own account of the earlier work. It links a Reddit post, which blocks automated access, so that post was not read.
+- Warner et al. (2024). *Smarter, Better, Faster, Longer: A Modern Bidirectional Encoder for Fast, Memory Efficient, and Long Context Finetuning and Inference* (ModernBERT). [arXiv:2412.13663](https://arxiv.org/abs/2412.13663). The encoder Laya is built on.
+
+**Vega and Decision 2.0**
+
+- vLLM Semantic Router team. *Decision-2.0-Vega-27B* and the smaller Decision 2.0 model cards. <https://huggingface.co/vllm-sr/Decision-2.0-Vega-27B>. Cards, configuration files and source code were read. The latency figures are the cards' own.
+
+**Related ideas and data**
+
+- Clarke et al. (2023). *Label agnostic pre-training for zero-shot text classification.* Findings of ACL 2023, pp. 1009 to 1021. **(not opened)**; it appears in the reference list of the "Jev in the Wild" paper.
+- Hugging Face dataset pages for `LocalLLaMA/typed-decisions` and `ZefanCai/Open-Jev`. Descriptions and metadata only.
+- Kahneman, D. (2011). *Thinking, Fast and Slow.* The origin of the System 1 and System 2 terms. Used only for that general idea.
+
 ---
 
 ## Notes on verification
@@ -184,3 +216,5 @@ The handbook grew out of a guided study session built around one lecture series.
 - **Hardware figures (Chapter 23)** such as H100 bandwidth, NVLink and PCIe speeds are as quoted by NVIDIA, and the NVLink and PCIe figures there are total both directions. The TPU 8i and Jalapeño details are company announcements.
 - **Chapters 16, 17 and 21** (the modern-models chapters) were written earlier in the project and checked against the official papers and model cards for the models discussed. The papers listed above are the primary sources. Page-level addresses for individual claims in those chapters were not recorded, so check a specific figure against the cited paper or model card before relying on it.
 - **Not used.** No book, course or website beyond those listed was consulted, and no other YouTube playlist or video was searched or sourced.
+- **Decision models (Chapter 25).** The field is weeks old. Statements about Laya's architecture were checked against its source code and documentation, and statements about Vega's against its model cards, configuration and code. Performance and speed figures are the makers' own unless an independent test is named, and Jev's internals are not public. The worked numbers in the chapter (probabilities, expected level, ranked probability score) are illustrative and were computed by hand and checked with a short script.
+- **Not used (Chapter 25).** The Reddit post that the Laya author links could not be opened, and the articles on Microsoft-Decision-1, OpenAI's decisions API and Cloudflare's Clef models were seen only as search results.
