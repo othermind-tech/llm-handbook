@@ -558,7 +558,7 @@ But look at step 9 again. For a 70-billion-parameter model, *every step* updates
 
 > **Do we really need to update all 70 billion parameters?**
 
-That question gave birth to LoRA.
+That question gave birth to LoRA. One thing to keep straight from the start: what LoRA mainly shrinks is **memory and storage**. It does *not* shrink the arithmetic per step by much, as Part 5 shows.
 
 ---
 
@@ -632,6 +632,37 @@ LoRA with r = 8:            4096 × 8  +  8 × 4096    =     65,536
 ```
 
 > **A note on conventions.** Throughout this handbook we've written layers as `Y = XW`, with the input as a row vector. Research papers (and the LoRA paper) usually write `y = Wx` with a column vector, which is why the product is written `BA`, with `B` as the expanding matrix (`d_out × r`) and `A` as the compressing one (`r × d_in`). In our row convention the same two matrices appear in the opposite order. The roles don't change: **`A` compresses, `B` expands.** We use the papers' naming because that's what you'll meet in libraries and checkpoints.
+
+### Inside one adapter: a picture
+
+Here is one frozen matrix `W` (`4096 × 4096`) with its LoRA side path, at rank 8. Following the note above, the picture uses the papers' column-vector form `y = Wx`, where `A` compresses and `B` expands.
+
+```text
+input x  (4096 numbers)
+   │
+   ├──► W   [frozen]       4096 × 4096 = 16,777,216 numbers, from pre-training, never changes
+   │         │
+   │         ▼   output  W·x
+   │
+   └──► LoRA side path     [the only trained part]
+             A :  8 × 4096    "squeeze down"      starts small and random
+             │
+             ▼   8 numbers (the rank r)
+             B :  4096 × 8    "expand back up"    starts at ZERO
+             │
+             ▼   × (alpha / r)
+             output  (alpha/r) · B · A · x
+
+the two outputs are added:    y  =  W·x  +  (alpha/r) · B · A · x
+```
+
+What the picture shows:
+
+- **Two small matrices per target matrix.** `A` and `B` hold 32,768 numbers each, 65,536 in total, against 16,777,216 in `W` (about 0.4%).
+- **The correction is *defined* as `B·A`.** The full change is never computed first and then squeezed into two pieces. Training adjusts `A` and `B` directly, so the change is forced to be low-rank from the start.
+- **`B` starts at zero,** so at step 0 the side path adds nothing and the model begins exactly as the pretrained one.
+- **`r` (the rank) is the main dial.** A larger `r` means a more expressive adapter and a bigger file. Typical values run from 8 to 64, and up to 128 or more for harder tasks.
+- **`alpha` sets how strongly the correction is applied.** It is a fixed setting you choose before training, not something that is learned. The scale is `alpha / r`, so a common rule of thumb is to set `alpha` equal to `r` or `2r` (a scale of 1 or 2), which keeps the strength comparable when you change `r`.
 
 ### Why does this work? "Low rank", explained
 
@@ -749,6 +780,69 @@ Two small details worth knowing:
 - **Gradients still flow *through* the frozen `W`.** An adapter in layer 1 needs error signals that travelled back through all the later layers. What is skipped is *computing and storing a gradient for `W` itself*, and the AdamW state (momentum and variance, Chapter 11) that would go with it. That is where most of the memory saving comes from.
 - LoRA implementations usually multiply the correction by a scale factor (`α / r`), so the strength of the adapter can be tuned independently of its rank.
 
+### How the error reaches A and B
+
+The learning loop is the one from Chapters 9 to 11: forward pass, loss, backpropagation, AdamW. Only the set of trainable weights is different. For one adapted layer (column-vector form, with `s = alpha / r`):
+
+```text
+forward:    h = A·x            (r numbers)
+            y = W·x + s·B·h
+
+backward:   g = dLoss/dy        the error signal arriving from above (same size as y)
+
+            dLoss/dB = s · g · hᵀ            B's gradient needs only h
+            dLoss/dA = s · (Bᵀ·g) · xᵀ       A's gradient needs g pulled back through B
+            dLoss/dx = Wᵀ·g + s·Aᵀ·Bᵀ·g     keeps flowing down to the layer below
+            dLoss/dW = not computed          W is frozen
+```
+
+Each gradient has the same shape as the matrix it updates, so AdamW treats `A` and `B` like any other weights.
+
+**The zero start has a consequence.** Take the toy sizes `x = [2, 5]`, rank 1, `A = [0.1, 0.2]`, `B = [0, 0]ᵀ`, `s = 1`, and suppose the error arriving from above is `g = [1, −1]ᵀ`. For simplicity, use a plain gradient step with learning rate 0.1 (real training uses AdamW):
+
+```text
+step 0:   h = A·x = 0.1×2 + 0.2×5 = 1.2
+          dLoss/dB = g·h          = [ 1.2, −1.2]ᵀ     B receives a gradient
+          dLoss/dA = (Bᵀg)·xᵀ     = 0 · [2, 5] = [0, 0]   A receives nothing, because B = 0
+          update:  B → [−0.12, +0.12]ᵀ     A unchanged
+
+step 1:   Bᵀ·g = (−0.12)(1) + (0.12)(−1) = −0.24
+          dLoss/dA = −0.24 · [2, 5] = [−0.48, −1.2]      now A moves too
+```
+
+So **`B` moves first**, and once `B` is non-zero, `A` starts learning as well. The adapter begins by doing nothing, then both matrices learn together.
+
+### Learning rate
+
+Full fine-tuning uses a small learning rate, because every weight is being nudged and a big step could damage what the model knows. LoRA moves only a few numbers, and the model begins exactly at the pretrained weights, so it is usually trained with a *larger* rate: commonly around 1e-4 to 3e-4, against roughly 1e-5 to 5e-5 for updating all the weights.
+
+### What LoRA saves, and what it does not
+
+LoRA saves **memory and storage**. It does not save much **compute**. Count the arithmetic for one token, with `N` as the number of weights in the frozen model:
+
+```text
+                         full fine-tuning     LoRA
+forward pass                  2N              2N        every layer still runs
+error signals backwards       2N              2N        still passes through every frozen layer
+weight gradients              2N              ≈ 0       skipped for frozen W (only tiny A, B)
+                              ──              ───
+per token                     6N              ≈ 4N
+```
+
+So a LoRA step is roughly a third cheaper per token, not many times cheaper. (The adapters add a small extra cost, and some memory-saving tricks, like recomputing activations instead of storing them, push it back up towards 6N.)
+
+Memory is where the big difference is. With a common rule of thumb for mixed-precision AdamW (about 16 bytes per trained weight: the 16-bit weight and gradient, a 32-bit master copy, and two 32-bit Adam statistics):
+
+```text
+7-billion-parameter model
+  full fine-tuning:  7B × 16 bytes                      ≈ 112 GB    (before activations)
+  LoRA:              frozen weights 7B × 2 bytes         ≈  14 GB
+                     + adapter: 4.2M numbers × 16 bytes  ≈  0.07 GB
+                                                         ≈  14 GB    (before activations)
+```
+
+The adapter here is 4.2 million numbers: rank 8 on `W_Q` and `W_V` (65,536 each) in each of 32 blocks. That is why a model that cannot be fully fine-tuned on one GPU can often be LoRA-tuned on it. It also answers a common question: **LoRA is not something extracted after an expensive fine-tune.** It *is* the fine-tune, trained directly, and it is cheaper mainly because far less has to be stored while training.
+
 ### Is it the same adapter for every block?
 
 No. **Every layer gets its own LoRA matrices.** If the model has 32 blocks and LoRA is attached to `W_Q` and `W_V`:
@@ -761,6 +855,59 @@ Block 32:  W_Q₃₂ → (A_q₃₂, B_q₃₂)  W_V₃₂ → (A_v₃₂, B_v�
 ```
 
 That is natural: different blocks learn different things (early blocks tend to capture basic syntax, later ones relationships and longer-range structure; each block refines the contextual embeddings further, see Chapters 7 and 8), so their corrections must differ. A LoRA file is therefore a collection of hundreds of small matrices, one pair per targeted matrix per block. That's why LoRA files are tens or hundreds of megabytes, not kilobytes.
+
+### Where the adapters sit in the whole model
+
+The same pattern repeats inside every Transformer block. `[F]` marks frozen weights and `[T]` marks trained ones. Which matrices get adapters is your choice (see "Which matrices get an adapter?" above).
+
+```text
+tokens  "The cat sat"
+   │
+   ▼
+Token embedding table                                      [F]
+   │
+   ▼
+┌─ Transformer block 1   (this repeats N times) ──────────────
+│  Attention
+│     W_Q   [F]  + LoRA A,B  [T]
+│     W_K   [F]  + LoRA A,B  [T]      which matrices get
+│     W_V   [F]  + LoRA A,B  [T]      adapters is a choice
+│     W_O   [F]  + LoRA A,B  [T]
+│     then residual + LayerNorm                              [F]
+│  Feed-forward network
+│     W1    [F]  + LoRA A,B  [T]
+│     W2    [F]  + LoRA A,B  [T]
+│     then residual + LayerNorm                              [F]
+└──────────────────────────────────────────────────────────────
+   │
+   ▼
+blocks 2 ... N: same pattern, each with its OWN A and B
+   │
+   ▼
+Final norm                                                 [F]
+   │
+   ▼
+LM head → next-token probabilities                         [F]
+```
+
+Everything big stays frozen. Only the small `A,B` pairs are trained, and during training the error still travels back through every frozen layer to reach them.
+
+### What is inside an adapter file
+
+```text
+adapter folder
+├── adapter_config.json     rank r, alpha, which matrices were targeted,
+│                           the name of the base model it was trained on
+└── adapter weights         for EVERY targeted matrix, a pair:
+                              block 0, W_Q:  lora_A [r × d_in]    lora_B [d_out × r]
+                              block 0, W_V:  lora_A               lora_B
+                              block 1, W_Q:  ...
+                              ... one pair per targeted matrix per block ...
+
+NOT included: the base model's weights. They are a separate (large) download.
+```
+
+The adapter only makes sense on top of the base model it was trained on, because it is a correction to *those* weights.
 
 ### At inference time
 
@@ -786,6 +933,29 @@ Base model          70 GB
 One base model and many tiny adapters, instead of four full 70 GB copies. This is also what you're downloading when you pull something like `medical-lora` from Hugging Face: not another model, just the `BA` matrices. The framework loads *base model + adapter → effective model*. That is why LoRA became the standard in the open-source community.
 
 It also raises an interesting question: can you load a medical adapter *and* a finance adapter together, or merge them into one model? **Sometimes yes, sometimes spectacularly no**, because both adapters push on the same weight matrices, and their updates can interfere. This is an active research area (adapter composition and merging).
+
+One way to combine adapters is to stack several trained ones along the rank dimension. Four rank-128 adapters become one rank-512 adapter, with the `B` matrices scaled by one quarter so that the combined correction is the average of the four, not the sum.
+
+### LoRA in a nutshell (quick refresher)
+
+```text
+WHAT      Freeze the big model.  For each chosen weight matrix W, learn two thin matrices A and B.
+          The layer computes   y = W·x + (alpha/r) · B · (A·x)
+WHY       Fine-tuning mostly *edits* the model, so the change can be low-rank (r ≈ 8-64).
+          65,536 trained numbers instead of 16.7 million, for a 4096 × 4096 matrix.
+HOW       Same loop as always (forward, loss, backprop, AdamW), but only A and B are trainable.
+          A starts random, B starts at ZERO (so the model starts unchanged, and B moves first).
+          Gradients still flow THROUGH the frozen layers to reach every A and B.
+          Learning rate is usually larger than for full fine-tuning (about 1e-4 to 3e-4).
+SAVES     Memory (no gradients or Adam state for the frozen weights) and storage (a small adapter file).
+          NOT compute: about 4N instead of 6N arithmetic per token, a third less, not many times less.
+SHIPS     A small adapter file (r, alpha, targeted matrices, base-model name, one A,B pair per matrix
+          per block). The base weights are not in it.
+RUN TIME  Attached:  y = W·x + (alpha/r)·B·A·x   (swap adapters without reloading the base model)
+          Merged:    W' = W + (alpha/r)·B·A       (an ordinary model, no extra cost per token)
+NOT       an add-on network that generates weights, a patch made after an expensive fine-tune,
+          or a change that touches only a few outputs (W + BA is full-size, so every output shifts).
+```
 
 ### The pattern behind modern LLM engineering
 
@@ -1209,6 +1379,10 @@ LoRA and QLoRA are not extra stages. They are a **cheaper way of doing a stage**
 | "One LoRA adapter is shared across all blocks." | Each targeted matrix in each block has its own `A` and `B`. |
 | "A LoRA file is a tiny few-kilobyte patch." | It's hundreds of small matrices: typically tens to hundreds of MB. |
 | "LoRA/QLoRA make inference slower." | An adapter can be merged into the weights, so inference cost is the same as the base model. |
+| "LoRA is made after an expensive full fine-tune." | LoRA *is* the fine-tune: `A` and `B` are trained directly. It is normally not extracted from a finished full fine-tune. |
+| "LoRA makes training much faster." | It saves memory and storage. Per-token arithmetic only drops from about 6N to about 4N. |
+| "The full weight change is computed first, then squeezed into `A` and `B`." | `ΔW` is *defined* as `B·A` from the start, and only `A` and `B` are ever trained. |
+| "LoRA needs a smaller learning rate than full fine-tuning." | Usually a larger one (about 1e-4 to 3e-4), because only a few numbers move. |
 | "RLHF produces a new model." | It's another training stage on the *same* LLM, guided by a separate reward model. |
 | "The reward model runs every time you chat." | It exists only during training and is discarded. |
 | "The reward model gets merged into the LLM afterwards." | It never does. It only shapes the gradients during training, and the LLM's own weights absorb the result. |
@@ -1233,10 +1407,13 @@ Two masks      causal mask = inside attention;  loss mask = at cross-entropy
 
 Full FT        update every parameter  (70B → 70B updates, a full copy per task)
 
-LoRA           freeze W;  learn ΔW = B·A   (B: d_out×r,  A: r×d_in,  r ≈ 8)
-               4096×4096 → 65,536 params (~256× fewer);  B starts at 0
+LoRA           freeze W;  learn ΔW = B·A   (B: d_out×r,  A: r×d_in,  r ≈ 8-64)
+               4096×4096 → 65,536 params (~256× fewer);  A random, B starts at 0 (B moves first)
+               scale alpha/r (alpha is a fixed setting, often r or 2r);  learning rate ~1e-4 to 3e-4
                one (A, B) pair per targeted matrix per block (often W_Q, W_V)
-               inference:  W + B·A   (can be merged)
+               saves MEMORY and storage, not compute (≈4N vs 6N per token)
+               adapter file = config (r, alpha, targets, base name) + A,B pairs; base weights not included
+               inference:  W + B·A   (attached, or merged)
 QLoRA          LoRA on top of a 4-bit frozen base model; adapters in 16-bit
 
 RLHF           preference pairs → Reward Model (one score) → PPO → same LLM

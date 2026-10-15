@@ -4,7 +4,7 @@
 
 **Start here:** [Chapter 1: The Big Picture](Chapter-01-The-Big-Picture.md) · [Contents](#contents) · [Learn with an AI assistant](#learning-with-an-ai-assistant) · [Appendix A: TinyGPT by Hand](Appendix-A-TinyGPT-by-Hand.md) · [References](References.md)
 
-**Prefer a PDF?** [Download the full handbook as one PDF](https://github.com/anandcoding-cloud/llm-handbook-how-large-language-models-work/raw/main/pdf/LLM-Handbook-How-Large-Language-Models-Work.pdf) (352 pages, with a clickable table of contents). It is generated from these Markdown files.
+**Prefer a PDF?** [Download the full handbook as one PDF](https://github.com/anandcoding-cloud/llm-handbook-how-large-language-models-work/raw/main/pdf/LLM-Handbook-How-Large-Language-Models-Work.pdf) (355 pages, with a clickable table of contents). It is generated from these Markdown files.
 
 ---
 
